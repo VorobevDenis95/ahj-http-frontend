@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 20px;
+}
+
+.vissualy_hidden {
+    position: fixed;
+    transform: scale(0);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list {
+    min-width: 750px;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    min-height: 50px;
+    border: 1px solid grey;
+    display: flex;
+    align-items: flex-start;
+}
+
+.item_checkbox {
+    width: 5%;
+}
+
+.item_info {
+    width: 60%;
+}
+
+.item_name {
+    font-weight: normal;
+}
+
+.item_date {
+    width: 20%;
+}
+
+.item_update, .item_delete {
+    cursor: pointer;
+    border-radius: 100%;
+    background-color: transparent;
+    width: 4%;
+    margin-left: 1%;
+}
+
+.popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup_addTicked {
+    min-width: 600px;
+    width: 50%;
+    background-color: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.popup_btn_container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.popup_btn {
+    border-radius: 25%;
+    border-color: grey;
+    background-color: transparent;
+    margin: 10px;
+    padding: 10px;
+}

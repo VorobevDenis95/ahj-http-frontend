@@ -1,6 +1,8 @@
 import HelpDesk from './HelpDesk';
+import Ticket from './Ticket';
+import TicketView from './TicketView';
 import createRequest from './api/createRequest';
-import { getList } from './utils';
+import { url } from './url';
 
 const root = document.getElementById('root');
 
@@ -12,7 +14,7 @@ const list = document.querySelector('.list');
 const item = document.querySelector('.item_task');
 
 
-const url = 'http://localhost:3000/?method=allTickets';
+
 
 // url
 
@@ -22,18 +24,24 @@ const url = 'http://localhost:3000/?method=allTickets';
 //   console.log(json);
 // }
 
+// list
+  // createRequest(url.allTickets).then((data) => {
+  //   data.forEach(el => {
+  //     const elementItem = document.createElement('li');
+  //     elementItem.textContent = el.name;
+  //     list.prepend(elementItem);
+  //   });
+  // });
 
-  createRequest(url).then((data) => {
+  createRequest(url.allTickets).then((data) => {
     data.forEach(el => {
-      const elementItem = document.createElement('li');
-      elementItem.textContent = el.name;
-      list.prepend(elementItem);
+      app.tickets.push(new TicketView(el));
+      app.tickets[app.tickets.length-1].init();
     });
   });
-  // app.ticketService.list(getList());
+
+  // app.ticketService.list(createRequest(url.allTickets));
 
 
-// createRequest(url).then((data) => {
-//   console.log(data);
-// })
+  //identificator
 

@@ -4,16 +4,16 @@
  * */
 export default class TicketService {
   list(callback) {
-    console.log(callback);
-    
 
   }
 
   get(id, callback) {
-  
+      
   }
 
-  create(data, callback) {}
+  create(data, callback) {
+
+  }
 
   update(id, data, callback) {}
 

@@ -1,4 +1,8 @@
+import TicketForm from "./TicketForm";
 import TicketService from "./TicketService";
+import TicketView from "./TicketView";
+import createRequest from "./api/createRequest";
+import { url } from "./url";
 
 /**
  *  Основной класс приложения
@@ -10,26 +14,36 @@ export default class HelpDesk {
     }
     this.container = container;
     this.ticketService = new TicketService();
+    this.ticketForm = new TicketForm();
+    this.tickets = [];
+
+    this.onClickAdd = this.onClickAdd.bind(this);
   }
   
   init() {
     this.container.innerHTML = HelpDesk.markup;
+
+    const btnAddTicket = document.querySelector('.add_item');
+    btnAddTicket.addEventListener('click', this.onClickAdd);
   }
+
 
   static get markup() {
     return `
     <form class="form">
     <button class="add_item">Добавить тикет</button>
-    <ul class="list">
-      <li class="items">
-        <input class="item_checkbox" type="checkbox">
-        <p class="item_task"></p>
-        <span class="item_date"></span>
-        <button class="item_update"></button>
-        <button class="item_delete"></button>
-      </li>
-    </ul>
+    <ul class="list"></ul>
   </form>
   `
+  }
+
+  create() {
+    createRequest(url.createTicket, )
+  }
+
+  onClickAdd(e) {
+      e.preventDefault();
+      this.ticketForm.viewForm();
+  
   }
 }
