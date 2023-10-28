@@ -56,6 +56,7 @@ export default class TicketForm {
   static get markupFormDeleteTicket() {
     return `
         <form class="popup_addTicked">
+        
     `
   }
 }

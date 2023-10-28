@@ -22,9 +22,18 @@ export default class HelpDesk {
   
   init() {
     this.container.innerHTML = HelpDesk.markup;
-
+    this.updateList();
     const btnAddTicket = document.querySelector('.add_item');
     btnAddTicket.addEventListener('click', this.onClickAdd);
+  }
+
+  updateList() {
+    createRequest(url.allTickets).then((data) => {
+      data.forEach(el => {
+        this.tickets.push(new TicketView(el));
+        this.tickets[this.tickets.length-1].init();
+      });
+    });
   }
 
 
@@ -37,13 +46,12 @@ export default class HelpDesk {
   `
   }
 
-  create() {
-    createRequest(url.createTicket, )
-  }
 
   onClickAdd(e) {
       e.preventDefault();
       this.ticketForm.viewForm();
+      const submit = this.container.querySelector('.popup_btn')
+
   
   }
 }

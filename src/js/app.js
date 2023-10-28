@@ -33,12 +33,12 @@ const item = document.querySelector('.item_task');
   //   });
   // });
 
-  createRequest(url.allTickets).then((data) => {
-    data.forEach(el => {
-      app.tickets.push(new TicketView(el));
-      app.tickets[app.tickets.length-1].init();
-    });
-  });
+  // createRequest(url.allTickets).then((data) => {
+  //   data.forEach(el => {
+  //     app.tickets.push(new TicketView(el));
+  //     app.tickets[app.tickets.length-1].init();
+  //   });
+  // });
 
   // app.ticketService.list(createRequest(url.allTickets));
 
