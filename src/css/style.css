@@ -10,7 +10,7 @@
     transform: scale(0);
 }
 
-.form {
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,7 +23,7 @@
 }
 
 .item {
-    min-height: 50px;
+    min-height: 30px;
     border: 1px solid grey;
     display: flex;
     align-items: flex-start;
@@ -39,6 +39,11 @@
 
 .item_name {
     font-weight: normal;
+}
+
+.item_description {
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 .item_date {
@@ -66,7 +71,7 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.popup_addTicked {
+.popup_container {
     min-width: 600px;
     width: 50%;
     background-color: #fff;
@@ -88,3 +93,4 @@
     margin: 10px;
     padding: 10px;
 }
+

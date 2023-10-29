@@ -1,8 +1,9 @@
-import TicketForm from "./TicketForm";
-import TicketService from "./TicketService";
-import TicketView from "./TicketView";
-import createRequest from "./api/createRequest";
-import { url } from "./url";
+/* eslint-disable no-shadow */
+import TicketForm from './TicketForm';
+
+import TicketView from './TicketView';
+import createRequest from './api/createRequest';
+import { url } from './url';
 
 /**
  *  Основной класс приложения
@@ -10,48 +11,159 @@ import { url } from "./url";
 export default class HelpDesk {
   constructor(container) {
     if (!(container instanceof HTMLElement)) {
-      throw new Error("This is not HTML element!");
+      throw new Error('This is not HTML element!');
     }
     this.container = container;
-    this.ticketService = new TicketService();
     this.ticketForm = new TicketForm();
     this.tickets = [];
-
-    this.onClickAdd = this.onClickAdd.bind(this);
   }
-  
+
   init() {
     this.container.innerHTML = HelpDesk.markup;
     this.updateList();
-    const btnAddTicket = document.querySelector('.add_item');
-    btnAddTicket.addEventListener('click', this.onClickAdd);
+
+    // слушаем контейнер
+    this.container.addEventListener('click', (e) => {
+      if (e.target.closest('.add_item')) {
+        this.ticketForm.viewForm();
+        const cancel = this.container.querySelector('.popup_btn_cancel');
+        const submit = this.container.querySelector('.popup_submit');
+        console.log(submit);
+        // eslint-disable-next-line no-shadow
+        submit.addEventListener('click', (e) => {
+          e.preventDefault();
+          const name = this.container.querySelector('.shot_description_input').value;
+          const description = this.container.querySelector('.large_description_input').value;
+
+          if (name) {
+            const data = JSON.stringify({ name, description });
+            createRequest(url.createTicket, {
+              method: 'POST',
+              body: data,
+            }).then(() => {
+              this.container.innerHTML = HelpDesk.markup;
+              this.updateList();
+            });
+            this.ticketForm.deleteForm();
+          }
+        });
+
+        cancel.addEventListener('click', () => {
+          this.ticketForm.deleteForm();
+        });
+      }
+
+      // удаление тикета
+      if (e.target.closest('.item_delete')) {
+        const item = e.target.closest('.item');
+        const id = item.getAttribute('data-id');
+        this.ticketForm.viewFormDelete();
+        const form = this.container.querySelector('.popup_container');
+        const cancel = this.container.querySelector('.btn_cancel_delete');
+
+        cancel.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.ticketForm.deleteForm();
+        });
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          fetch(`${url.deleteTicket}${id}`);
+          this.ticketForm.deleteForm();
+          this.container.innerHTML = HelpDesk.markup;
+          this.updateList();
+        });
+      }
+
+      // редактирование тикета
+      if (e.target.closest('.item_update')) {
+        const item = e.target.closest('.item');
+        const itemName = item.querySelector('.item_name').textContent;
+        const itemDesctiption = item.querySelector('.item_description').textContent;
+        const id = item.getAttribute('data-id');
+
+        this.ticketForm.viewForm();
+        const nameItem = this.container.querySelector('.shot_description_input');
+        const descriptionItem = this.container.querySelector('.large_description_input');
+        nameItem.textContent = itemName;
+        descriptionItem.textContent = itemDesctiption;
+
+        const cancel = this.container.querySelector('.popup_btn_cancel');
+        cancel.addEventListener('click', () => {
+          this.ticketForm.deleteForm();
+        });
+
+        const form = this.container.querySelector('.popup_container');
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const data = {
+            name: this.container.querySelector('.shot_description_input').value,
+            description: this.container.querySelector('.large_description_input').value,
+          };
+          fetch(`${url.updateTicket}${id}`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+          })
+            .then((response) => console.log(response))
+            .catch((err) => console.error(err));
+
+          this.container.innerHTML = HelpDesk.markup;
+          this.updateList();
+          this.ticketForm.deleteForm();
+        });
+      }
+
+      // редактирование статуса
+
+      if (e.target.closest('.item_checkbox')) {
+        const target = e.target.closest('.item_checkbox');
+        const id = target.closest('.item').getAttribute('data-id');
+        const data = { status: target.checked };
+        fetch(`${url.updateTicket}${id}`, {
+          method: 'POST',
+          body: JSON.stringify(data),
+        })
+          .then((response) => (response.status))
+          .then(() => {
+            this.container.innerHTML = HelpDesk.markup;
+            this.updateList();
+          })
+          .catch((err) => console.error(err));
+      }
+
+      // ищем тикет по клику на тикет, а не на кнопки
+      if (e.target.closest('.item') && !e.target.closest('.item_update')
+      && !e.target.closest('.item_delete') && !e.target.closest('.item_checkbox')) {
+        const item = e.target.closest('.item');
+        const id = item.getAttribute('data-id');
+        const description = item.querySelector('.item_description');
+        createRequest(`${url.searchTicket}${id}`).then((data) => {
+          description.classList.toggle('vissualy_hidden');
+          description.textContent = data.description;
+        });
+      }
+    });
   }
 
   updateList() {
     createRequest(url.allTickets).then((data) => {
-      data.forEach(el => {
+      this.tickets = [];
+      data.forEach((el) => {
         this.tickets.push(new TicketView(el));
-        this.tickets[this.tickets.length-1].init();
+        this.tickets[this.tickets.length - 1].init();
       });
     });
   }
 
+  clearList() {
+    this.tickets = [];
+  }
 
   static get markup() {
     return `
-    <form class="form">
+    <div class="container">
     <button class="add_item">Добавить тикет</button>
     <ul class="list"></ul>
-  </form>
-  `
-  }
-
-
-  onClickAdd(e) {
-      e.preventDefault();
-      this.ticketForm.viewForm();
-      const submit = this.container.querySelector('.popup_btn')
-
-  
+  </div>
+  `;
   }
 }
