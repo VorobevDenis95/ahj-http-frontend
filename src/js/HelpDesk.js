@@ -78,15 +78,14 @@ export default class HelpDesk {
       if (e.target.closest('.item_update')) {
         const item = e.target.closest('.item');
         const itemName = item.querySelector('.item_name').textContent;
-        const itemDesctiption = item.querySelector('.item_description').textContent;
         const id = item.getAttribute('data-id');
-
         this.ticketForm.viewForm();
         const nameItem = this.container.querySelector('.shot_description_input');
         const descriptionItem = this.container.querySelector('.large_description_input');
         nameItem.textContent = itemName;
-        descriptionItem.textContent = itemDesctiption;
-
+        createRequest(`${url.searchTicket}${id}`).then((data) => {
+          descriptionItem.textContent = data.description;
+        });
         const cancel = this.container.querySelector('.popup_btn_cancel');
         cancel.addEventListener('click', () => {
           this.ticketForm.deleteForm();
