@@ -28,7 +28,6 @@ export default class HelpDesk {
         this.ticketForm.viewForm();
         const cancel = this.container.querySelector('.popup_btn_cancel');
         const submit = this.container.querySelector('.popup_submit');
-        console.log(submit);
         // eslint-disable-next-line no-shadow
         submit.addEventListener('click', (e) => {
           e.preventDefault();
@@ -67,10 +66,13 @@ export default class HelpDesk {
         });
         form.addEventListener('submit', (e) => {
           e.preventDefault();
-          fetch(`${url.deleteTicket}${id}`);
-          this.ticketForm.deleteForm();
-          this.container.innerHTML = HelpDesk.markup;
-          this.updateList();
+          fetch(`${url.deleteTicket}${id}`).then((response) => {
+            if (response.status === 204) {
+              this.ticketForm.deleteForm();
+              this.container.innerHTML = HelpDesk.markup;
+              this.updateList();
+            }
+          });
         });
       }
 
@@ -102,12 +104,14 @@ export default class HelpDesk {
             method: 'POST',
             body: JSON.stringify(data),
           })
-            .then((response) => console.log(response))
+            .then((response) => {
+              if (response.status === 200) {
+                this.container.innerHTML = HelpDesk.markup;
+                this.updateList();
+                this.ticketForm.deleteForm();
+              }
+            })
             .catch((err) => console.error(err));
-
-          this.container.innerHTML = HelpDesk.markup;
-          this.updateList();
-          this.ticketForm.deleteForm();
         });
       }
 
@@ -121,10 +125,11 @@ export default class HelpDesk {
           method: 'POST',
           body: JSON.stringify(data),
         })
-          .then((response) => (response.status))
-          .then(() => {
-            this.container.innerHTML = HelpDesk.markup;
-            this.updateList();
+          .then((response) => {
+            if (response.status === 200) {
+              this.container.innerHTML = HelpDesk.markup;
+              this.updateList();
+            }
           })
           .catch((err) => console.error(err));
       }
